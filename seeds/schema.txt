@@ -5,6 +5,7 @@ Kafka_key = "city_name"
 # Value schema
 
 StructType([
+    StructField("city", StringType(), True),
     StructField("lon", FloatType(), True),
     StructField("lat", FloatType(), True),
     StructField("air_quality_index", IntegerType(), True),
