@@ -68,13 +68,22 @@ def delivery_callback(err, msg):
     if err:
         print(f"ERROR: Message failed delivery: {err}")
     else:
-        print(f"Produced event to topic {msg.topic()}: key = {msg.key().decode('utf-8')}")         )
+        print(
+            f"Produced event to topic {msg.topic()}: key = {msg.key().decode('utf-8')}"
+        )
 
 
 def main():
+    # Setup
     args, config, logger = set_up()
     API_KEY = config["openweather"]["API_KEY"]
     topic = args.topic
+
+    # Create Producer instance
+    print(f"Kafka config: {config['kafka']}")
+    producer = Producer(dict(config["kafka"]))
+
+    # Produce each city air pollution data
     city_df = pd.read_csv(f"{args.seeds}/city_coords.csv")
     cities = list(city_df["city"])
     for city in cities:
@@ -85,11 +94,15 @@ def main():
         )
         conformed_res = get_city_air_pollution(lat, lon, city, API_KEY, logger)
         encoded_res = json.dumps(conformed_res)
+        producer.produce(topic, encoded_res, city, callback=delivery_callback)
 
         if args.test is True:
             print(conformed_res)
             with open(f"json_dumps/{city}_{int(time.time())}.json", "w") as f:
                 f.write(encoded_res)
+    # Block until the messages are sent.
+    producer.poll(10000)
+    producer.flush()
 
 
 if __name__ == "__main__":
