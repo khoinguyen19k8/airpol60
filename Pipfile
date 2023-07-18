@@ -7,9 +7,11 @@ name = "pypi"
 numpy = "*"
 pandas = "*"
 h5py = "*"
+requests = "*"
 
 [dev-packages]
 jupyterlab = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.10"

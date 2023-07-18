@@ -1,0 +1,21 @@
+# Key schema
+
+Kafka_key = "city_name"
+
+# Value schema
+
+StructType([
+    StructField("lon", FloatType(), True),
+    StructField("lat", FloatType(), True),
+    StructField("air_quality_index", IntegerType(), True),
+    StructField("co", FloatType(), True),
+    StructField("no", FloatType(), True),
+    StructField("no2", FloatType(), True),
+    StructField("o3", FloatType(), True),
+    StructField("so2", FloatType(), True),
+    StructField("pm2_5", FloatType(), True),
+    StructField("pm10", FloatType(), True),
+    StructField("nh3", FloatType(), True),
+    StructField("observed_date", LongType(), True),
+    StructField("ingested_date", LongType(), True),
+])

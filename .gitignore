@@ -1,1 +1,5 @@
 .ipynb_checkpoints/
+.vscode/
+.env
+config.properties
+notebooks/data_exploratory.ipynb
