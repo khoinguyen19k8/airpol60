@@ -1,13 +1,14 @@
 """
 Read from city_coords all city names then attempt to get the newest air pollution information for each of them.
 """
-from configparser import ConfigParser
-from argparse import ArgumentParser, FileType
-import pandas as pd
-import requests
 import time
 import logging
 import json
+from argparse import ArgumentParser, FileType
+from configparser import ConfigParser
+import pandas as pd
+import requests
+from confluent_kafka import Producer
 
 
 def set_up():
@@ -18,6 +19,8 @@ def set_up():
     parser.add_argument("--config_file", type=FileType("r"))
     parser.add_argument("--seeds", type=str, help="seed directory path")
     parser.add_argument("--test", action="store_true")
+    parser.add_argument("--topic", type=str)
+
     args = parser.parse_args()
 
     config = ConfigParser()
@@ -58,9 +61,20 @@ def get_city_air_pollution(lat, lon, city, api_key, logger):
     return conformed_res
 
 
+def delivery_callback(err, msg):
+    """
+    Callback function for kafka producer.
+    """
+    if err:
+        print(f"ERROR: Message failed delivery: {err}")
+    else:
+        print(f"Produced event to topic {msg.topic()}: key = {msg.key().decode('utf-8')}")         )
+
+
 def main():
     args, config, logger = set_up()
     API_KEY = config["openweather"]["API_KEY"]
+    topic = args.topic
     city_df = pd.read_csv(f"{args.seeds}/city_coords.csv")
     cities = list(city_df["city"])
     for city in cities:

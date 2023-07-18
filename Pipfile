@@ -8,6 +8,7 @@ numpy = "*"
 pandas = "*"
 h5py = "*"
 requests = "*"
+confluent-kafka = "*"
 
 [dev-packages]
 jupyterlab = "*"
