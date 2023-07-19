@@ -1,5 +1,4 @@
 .ipynb_checkpoints/
 .vscode/
-.env
 config/
 notebooks/data_exploratory.ipynb
